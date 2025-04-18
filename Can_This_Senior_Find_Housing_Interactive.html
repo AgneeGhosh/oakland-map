@@ -1,0 +1,113 @@
+<html><head><title>Can This Senior Find Housing?</title></head><body><tw-storydata creator="Twine" ifid="" name="Can This Senior Find Housing?" startnode="Start"><tw-passagedata name="Start" pid="0" position="100,100" size="100,100" tags="">You are a senior living in Oakland, facing eviction. Who are you?
+
+* [[Ms. Tammy (Black, 74, disabled, caregiver)-&gt;Tammy Start]]
+* [[Mr. Li (Asian, 70, veteran, fixed income)-&gt;Li Start]]
+* [[Ms. Harris (White, 76, retired teacher)-&gt;Harris Start]]</tw-passagedata><tw-passagedata name="Tammy Start" pid="1" position="120,100" size="100,100" tags="">(set: $character to "Tammy")(set: $health to 5)
+You are Ms. Tammy, a 74-year-old Black woman. You've just returned to Oakland after caring for your sister. You live on Social Security and are two months behind on rent.
+
+Do you want to apply for emergency rental assistance or look for shelter?
+
+* [[Apply for ERAP-&gt;Tammy ERAP]]
+* [[Look for shelter-&gt;Tammy Shelter]]
+</tw-passagedata><tw-passagedata name="Tammy ERAP" pid="2" position="140,100" size="100,100" tags="">(set: $erap to (either: "approved", "denied"))
+(if: $erap is "approved")[
+  Your ERAP application is approved. You get three months’ relief. (set: $health to $health + 1)
+  [[Continue-&gt;Tammy Voucher]]
+]
+(else:)[
+  Your ERAP application is denied. You begin to sleep in your car. (set: $health to $health - 2)
+  [[Continue-&gt;Tammy Health Declines]]
+]
+</tw-passagedata><tw-passagedata name="Tammy Shelter" pid="3" position="160,100" size="100,100" tags="">You try to get into St. Mary’s Center, but it's full. You’re offered a community cabin.
+
+Do you accept?
+
+* [[Yes-&gt;Tammy Cabin]]
+* [[No, I’ll sleep in my car-&gt;Tammy Health Declines]]
+</tw-passagedata><tw-passagedata name="Tammy Cabin" pid="4" position="180,100" size="100,100" tags="">The cabin gives you temporary shelter. It’s noisy and lacks privacy, but safer than the streets. (set: $health to $health - 1)
+
+[[Apply for a voucher-&gt;Tammy Voucher]]
+</tw-passagedata><tw-passagedata name="Tammy Health Declines" pid="5" position="200,100" size="100,100" tags="">Your health suffers. (if: $health &lt;= 2)[
+You collapse and are hospitalized. On release, you have nowhere to go.
+
+[[Restart-&gt;Start]]
+]
+(else:)[
+You struggle on, hoping for better.
+
+[[Try again-&gt;Tammy Voucher]]
+]
+</tw-passagedata><tw-passagedata name="Tammy Voucher" pid="6" position="220,100" size="100,100" tags="">You receive a Section 8 voucher. Can you find a landlord who will accept it?
+
+(set: $landlord to (either: "yes", "no"))
+(if: $landlord is "yes")[
+  Success! You find a unit that accepts vouchers. (set: $health to $health + 2)
+  [[Ending-&gt;Tammy Housed]]
+]
+(else:)[
+  No one will accept your voucher in time. It expires. (set: $health to $health - 2)
+  [[Ending-&gt;Tammy Failed]]
+]
+</tw-passagedata><tw-passagedata name="Tammy Housed" pid="7" position="240,100" size="100,100" tags="">You are one of the few Black seniors in Oakland who manage to find stable housing. You begin to rebuild.
+
+[[Play again-&gt;Start]]</tw-passagedata><tw-passagedata name="Tammy Failed" pid="8" position="260,100" size="100,100" tags="">Your voucher expires. You rejoin the waitlist, but it may be years before you're housed again.
+
+[[Play again-&gt;Start]]</tw-passagedata><tw-passagedata name="Li Start" pid="9" position="280,100" size="100,100" tags="">(set: $character to "Li")(set: $health to 5)
+You are Mr. Li, a 70-year-old Asian veteran on a fixed income. You’ve received an eviction notice after missing two rent payments.
+
+Do you:
+
+* [[Apply for veteran housing support-&gt;Li VASH]]
+* [[Call your son to stay with him-&gt;Li Son]]
+</tw-passagedata><tw-passagedata name="Li VASH" pid="10" position="300,100" size="100,100" tags="">You qualify for veteran housing but face a 3-month delay.
+
+Do you want to:
+
+* [[Wait it out in your car-&gt;Li Wait]]
+* [[Check into a shelter-&gt;Li Shelter]]
+</tw-passagedata><tw-passagedata name="Li Wait" pid="11" position="320,100" size="100,100" tags="">You wait in your car. It’s tough, but you make it through. (set: $health to $health - 1)
+
+[[You are housed-&gt;Li Housed]]
+</tw-passagedata><tw-passagedata name="Li Shelter" pid="12" position="340,100" size="100,100" tags="">The shelter is safe but crowded. You get sick. (set: $health to $health - 2)
+
+[[You are housed-&gt;Li Housed]]
+</tw-passagedata><tw-passagedata name="Li Son" pid="13" position="360,100" size="100,100" tags="">Your son takes you in. It’s far from your community, but you’re safe. (set: $health to $health + 1)
+
+[[Restart-&gt;Start]]
+</tw-passagedata><tw-passagedata name="Li Housed" pid="14" position="380,100" size="100,100" tags="">You move into subsidized veteran housing. You’re among the 45% of Asian seniors able to secure stable housing.
+
+[[Play again-&gt;Start]]
+</tw-passagedata><tw-passagedata name="Harris Start" pid="15" position="400,100" size="100,100" tags="">(set: $character to "Harris")(set: $health to 5)
+You are Ms. Harris, a 76-year-old white retired teacher. Your landlord has raised the rent by $500. You can't afford it.
+
+Do you:
+
+* [[Use savings to pay for one more month-&gt;Harris Delay]]
+* [[Apply for senior housing immediately-&gt;Harris Apply]]
+</tw-passagedata><tw-passagedata name="Harris Delay" pid="16" position="420,100" size="100,100" tags="">You delay eviction by a month. (set: $health to $health - 1)
+
+[[Now what-&gt;Harris Apply]]
+</tw-passagedata><tw-passagedata name="Harris Apply" pid="17" position="440,100" size="100,100" tags="">You apply for senior housing. There’s a unit available in 2 months.
+
+Do you:
+
+* [[Stay with a friend until then-&gt;Harris Safe]]
+* [[Try to make it alone-&gt;Harris Risk]]
+</tw-passagedata><tw-passagedata name="Harris Safe" pid="18" position="460,100" size="100,100" tags="">Your friend helps you bridge the gap. You move into a senior unit.
+
+You are one of the 63% of white seniors in Oakland who remain stably housed.
+
+[[Play again-&gt;Start]]
+</tw-passagedata><tw-passagedata name="Harris Risk" pid="19" position="480,100" size="100,100" tags="">You try to manage on your own. You end up hospitalized for stress. (set: $health to $health - 2)
+
+(if: $health &lt;= 2)[
+You are too sick to move in and lose your chance.
+
+[[Restart-&gt;Start]]
+]
+(else:)[
+You recover and secure the unit.
+
+[[Play again-&gt;Start]]
+]
+</tw-passagedata></tw-storydata></body></html>
