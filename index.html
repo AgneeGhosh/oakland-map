@@ -1,0 +1,136 @@
+# Save as HTML file
+import json
+
+housing_sites_20 = [
+    {"name": "Allen Temple Arms I", "address": "8135 International Blvd, Oakland, CA 94621", "lat": 37.7505, "lng": -122.1825, "units": 75, "year": 1979, "type": "Permanent housing"},
+    {"name": "Allen Temple Arms II", "address": "1388 81st Ave, Oakland, CA 94621", "lat": 37.7502, "lng": -122.1820, "units": 51, "year": 1987, "type": "Permanent housing"},
+    {"name": "St. Mary's Transitional Housing", "address": "925 Brockhurst St, Oakland, CA 94608", "lat": 37.8325, "lng": -122.2657, "units": 24, "year": "2008–2016", "type": "Transitional housing"},
+    {"name": "Jack London Gateway Senior Housing", "address": "989 Brush St, Oakland, CA 94607", "lat": 37.8000, "lng": -122.2750, "units": 61, "year": 2003, "type": "Voucher units"},
+    {"name": "Lakeside Senior Apartments", "address": "1507 2nd Ave, Oakland, CA 94606", "lat": 37.7970, "lng": -122.2610, "units": 92, "year": 2015, "type": "Supportive housing"},
+    {"name": "Casa Velasco", "address": "2020 35th Ave, Oakland, CA 94601", "lat": 37.7921, "lng": -122.2585, "units": 30, "year": 2000, "type": "Permanent housing"},
+    {"name": "Hotel Oakland Village", "address": "270 13th St, Oakland, CA 94612", "lat": 37.8071, "lng": -122.2695, "units": 400, "year": 1912, "type": "Senior living community"},
+    {"name": "Eastmont Court", "address": "6900 Bancroft Ave, Oakland, CA 94605", "lat": 37.7734, "lng": -122.1751, "units": 55, "year": 1996, "type": "Permanent housing"},
+    {"name": "Lion Creek Crossings", "address": "6888 Lion Way, Oakland, CA 94621", "lat": 37.7470, "lng": -122.1905, "units": 115, "year": 2006, "type": "Mixed-income housing"},
+    {"name": "Fruitvale Transit Village", "address": "3421 E 12th St, Oakland, CA 94601", "lat": 37.7749, "lng": -122.2249, "units": 47, "year": 2004, "type": "Mixed-use housing"},
+    {"name": "Casa Verde", "address": "1430 45th Ave, Oakland, CA 94601", "lat": 37.7794, "lng": -122.2226, "units": 28, "year": 2002, "type": "Permanent housing"},
+    {"name": "Palo Vista Gardens", "address": "1436 85th Ave, Oakland, CA 94621", "lat": 37.7918, "lng": -122.2186, "units": 66, "year": 1970, "type": "Senior housing"},
+    {"name": "Glen Brook Terrace", "address": "3811 Brookdale Ave, Oakland, CA 94619", "lat": 37.7763, "lng": -122.1687, "units": 62, "year": 1985, "type": "Affordable senior housing"},
+    {"name": "Oakland Point", "address": "675 28th St, Oakland, CA 94609", "lat": 37.8115, "lng": -122.2907, "units": 76, "year": 2018, "type": "New construction"},
+    {"name": "Sankofa House", "address": "5815 International Blvd, Oakland, CA 94621", "lat": 37.8041, "lng": -122.2728, "units": 25, "year": 2017, "type": "Transitional housing"},
+    {"name": "The Savoy", "address": "1424 Jackson St, Oakland, CA 94612", "lat": 37.8022, "lng": -122.2709, "units": 57, "year": 2011, "type": "Permanent housing"},
+    {"name": "Mission Paradise", "address": "205 41st Ave, Oakland, CA 94601", "lat": 37.7792, "lng": -122.2263, "units": 60, "year": 2010, "type": "Permanent housing"},
+    {"name": "Posada de Colores", "address": "2221 Fruitvale Ave, Oakland, CA 94601", "lat": 37.7768, "lng": -122.2225, "units": 45, "year": 1995, "type": "Senior housing"},
+    {"name": "Mercy Retirement and Care Center", "address": "3431 Foothill Blvd, Oakland, CA 94601", "lat": 37.7775, "lng": -122.2229, "units": 70, "year": 1980, "type": "Assisted living"},
+    {"name": "Effie's House", "address": "812 E 24th St, Oakland, CA 94606", "lat": 37.7903, "lng": -122.2198, "units": 36, "year": 1983, "type": "Senior housing"}
+]
+
+housing_json = json.dumps(housing_sites_20).replace("</", "<\\/")
+
+map_code = f"""
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Senior Housing in Oakland</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    body {{
+      font-family: Arial, sans-serif;
+      margin: 0;
+    }}
+    h2 {{
+      margin: 0;
+      padding: 1rem;
+      background: #343a40;
+      color: white;
+      text-align: center;
+    }}
+    #controls {{
+      padding: 10px;
+      background: #f8f9fa;
+    }}
+    #map {{
+      height: calc(100vh - 140px);
+      width: 100%;
+    }}
+    select, input {{
+      margin-right: 10px;
+      padding: 5px;
+      font-size: 1rem;
+    }}
+  </style>
+</head>
+<body>
+  <h2>Senior Affordable Housing Projects in Oakland</h2>
+  <div id="controls">
+    <label for="typeFilter">Filter by Type:</label>
+    <select id="typeFilter">
+      <option value="All">All</option>
+    </select>
+    <label for="searchInput">Search:</label>
+    <input type="text" id="searchInput" placeholder="Enter name or address..." />
+  </div>
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const housingSites = {housing_json};
+    const map = L.map('map').setView([37.8044, -122.2711], 12);
+
+    L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{
+      attribution: '&copy; OpenStreetMap contributors'
+    }}).addTo(map);
+
+    const markerGroup = L.layerGroup().addTo(map);
+    const typeFilter = document.getElementById("typeFilter");
+    const searchInput = document.getElementById("searchInput");
+
+    const types = Array.from(new Set(housingSites.map(site => site.type))).sort();
+    types.forEach(type => {{
+      const option = document.createElement("option");
+      option.value = type;
+      option.textContent = type;
+      typeFilter.appendChild(option);
+    }});
+
+    function renderMarkers() {{
+      const selectedType = typeFilter.value;
+      const searchTerm = searchInput.value.toLowerCase();
+      markerGroup.clearLayers();
+
+      housingSites.forEach(site => {{
+        if ((selectedType === "All" || site.type === selectedType) &&
+            (site.name.toLowerCase().includes(searchTerm) || site.address.toLowerCase().includes(searchTerm))) {{
+          const popupContent = `
+            <strong>${{site.name}}</strong><br>
+            Address: ${{site.address}}<br>
+            Units: ${{site.units}}<br>
+            Year Built: ${{site.year}}<br>
+            Type: ${{site.type}}
+          `;
+          L.circleMarker([site.lat, site.lng], {{
+            radius: 6,
+            color: 'red',
+            fillColor: 'red',
+            fillOpacity: 0.8
+          }}).bindPopup(popupContent).addTo(markerGroup);
+        }}
+      }});
+    }}
+
+    typeFilter.addEventListener("change", renderMarkers);
+    searchInput.addEventListener("input", renderMarkers);
+
+    renderMarkers();
+  </script>
+</body>
+</html>
+"""
+
+# Save HTML to file
+output_path = "/mnt/data/oakland_senior_housing_filtered_map.html"
+with open(output_path, "w") as f:
+    f.write(map_code)
+
+output_path
