@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Oakland Senior Housing Map</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+  <style>
+    #map {
+      height: 600px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <h2>Senior Affordable Housing Projects in Oakland</h2>
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const map = L.map('map').setView([37.8044, -122.2711], 12); // Oakland center
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    const housingSites = [
+      {
+        name: "Allen Temple Arms I",
+        address: "8135 International Blvd, Oakland, CA 94621",
+        lat: 37.7505,
+        lng: -122.1825,
+        totalUnits: 75,
+        yearBuilt: 1979,
+        notes: "Permanent affordable senior housing"
+      },
+      {
+        name: "Allen Temple Arms II",
+        address: "1388 81st Ave, Oakland, CA 94621",
+        lat: 37.7502,
+        lng: -122.1820,
+        totalUnits: 51,
+        yearBuilt: 1987,
+        notes: "Permanent affordable senior housing"
+      },
+      {
+        name: "St. Mary's Transitional Housing",
+        address: "925 Brockhurst St, Oakland, CA 94608",
+        lat: 37.8325,
+        lng: -122.2657,
+        totalUnits: 24,
+        yearBuilt: "2008–2016",
+        notes: "Transitional housing across 3 sites"
+      },
+      {
+        name: "Jack London Gateway Senior Housing",
+        address: "989 Brush St, Oakland, CA 94607",
+        lat: 37.8000,
+        lng: -122.2750,
+        totalUnits: 61,
+        yearBuilt: 2003,
+        notes: "Project-based voucher units"
+      },
+      {
+        name: "Lakeside Senior Apartments",
+        address: "1507 2nd Ave, Oakland, CA 94606",
+        lat: 37.7970,
+        lng: -122.2610,
+        totalUnits: 92,
+        yearBuilt: 2015,
+        notes: "Permanent supportive housing"
+      }
+    ];
+
+    housingSites.forEach(site => {
+      const popupContent = `
+        <b>${site.name}</b><br>
+        ${site.address}<br>
+        Units: ${site.totalUnits}<br>
+        Year Built: ${site.yearBuilt}<br>
+        ${site.notes}
+      `;
+      L.marker([site.lat, site.lng])
+        .addTo(map)
+        .bindPopup(popupContent);
+    });
+  </script>
+</body>
+</html>
